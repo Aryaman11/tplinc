@@ -580,7 +580,8 @@ padding-bottom:0.1em;
 				<div class="bottom_cta">
 					
 <div class="contact-form-container" style="max-width: 600px; margin: 40px auto; padding: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 15px; backdrop-filter: blur(10px);">
-    <form id="contactForm" class="contact-form" style="display: flex; flex-direction: column; gap: 20px;">
+    <form id="contactForm" class="contact-form" name="contact" method="POST" data-netlify="true" style="display: flex; flex-direction: column; gap: 20px;">
+        <input type="hidden" name="form-name" value="contact" />
         <div class="form-group">
             <label for="name" style="color: #FFFFFF; margin-bottom: 8px; display: block; font-size: 16px;">Your Name</label>
             <input type="text" id="name" name="name" required style="width: 100%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; background: rgba(255, 255, 255, 0.1); color: #FFFFFF; font-size: 16px;">
@@ -599,24 +600,6 @@ padding-bottom:0.1em;
         </div>
         <button type="submit" style="background: #0066FF; color: #FFFFFF; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;">Send Message</button>
     </form>
-</div>
-
-<!-- Custom Popup -->
-<div id="customPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); opacity: 0; background: rgba(17, 17, 17, 0.95); padding: 30px; border-radius: 20px; z-index: 1000; min-width: 320px; max-width: 90%; text-align: center; backdrop-filter: blur(10px); box-shadow: 0 0 40px rgba(0, 0, 0, 0.3); transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
-    <div id="popupIcon" class="popup-icon">
-        <!-- Success Icon -->
-        <svg class="success-icon" style="display: none;" width="60" height="60" viewBox="0 0 60 60" fill="none">
-            <circle class="success-circle" cx="30" cy="30" r="29" stroke="#4CAF50" stroke-width="2"/>
-            <path class="success-check" d="M18 32L26 40L42 20" stroke="#4CAF50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <!-- Error Icon -->
-        <svg class="error-icon" style="display: none;" width="60" height="60" viewBox="0 0 60 60" fill="none">
-            <circle class="error-circle" cx="30" cy="30" r="29" stroke="#f44336" stroke-width="2"/>
-            <path class="error-x" d="M20 20L40 40M40 20L20 40" stroke="#f44336" stroke-width="3" stroke-linecap="round"/>
-        </svg>
-    </div>
-    <div id="popupContent" style="color: white; margin: 20px 0; font-size: 16px; line-height: 1.5;"></div>
-    <button onclick="closePopup()" style="background: #0066FF; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 500; transform: translateY(0); transition: all 0.2s ease; box-shadow: 0 4px 15px rgba(0, 102, 255, 0.2);">Close</button>
 </div>
 
 <style>
@@ -642,229 +625,67 @@ padding-bottom:0.1em;
         padding: 20px;
     }
 }
-
-#customPopup.success {
-    border: 1px solid rgba(76, 175, 80, 0.2);
-}
-
-#customPopup.error {
-    border: 1px solid rgba(244, 67, 54, 0.2);
-}
-
-/* Popup Animations */
-@keyframes slideIn {
-    0% {
-        transform: translate(-50%, -40%) scale(0.8);
-        opacity: 0;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeOut {
-    0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, -60%) scale(0.8);
-        opacity: 0;
-    }
-}
-
-@keyframes drawCircle {
-    from {
-        stroke-dashoffset: 182;
-    }
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-@keyframes drawCheck {
-    from {
-        stroke-dashoffset: 36;
-    }
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-@keyframes drawX {
-    from {
-        stroke-dashoffset: 60;
-    }
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-#customPopup {
-    transform-origin: center center;
-}
-
-#customPopup.show {
-    display: block;
-    animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-#customPopup.hide {
-    animation: fadeOut 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-.popup-icon {
-    margin-bottom: 20px;
-}
-
-.success-circle, .error-circle {
-    stroke-dasharray: 182;
-    stroke-dashoffset: 182;
-    transform-origin: 50% 50%;
-    animation: drawCircle 0.6s ease-out forwards;
-}
-
-.success-check {
-    stroke-dasharray: 36;
-    stroke-dashoffset: 36;
-    animation: drawCheck 0.4s ease-out forwards 0.6s;
-}
-
-.error-x {
-    stroke-dasharray: 60;
-    stroke-dashoffset: 60;
-    animation: drawX 0.4s ease-out forwards 0.6s;
-}
-
-#customPopup button:hover {
-    background: #005be4;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3);
-}
-
-#customPopup button:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 15px rgba(0, 102, 255, 0.2);
-}
 </style>
 
 <script>
 document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
     const submitButton = this.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     submitButton.disabled = true;
     submitButton.textContent = 'Sending...';
 
+    // Remove any existing messages
+    const existingMessages = this.querySelectorAll('.form-message');
+    existingMessages.forEach(msg => msg.remove());
+
     // Form validation
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const profession = document.getElementById('profession').value.trim();
-    const message = document.getElementById('message').value.trim();
+    const formData = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        profession: document.getElementById('profession').value.trim(),
+        message: document.getElementById('message').value.trim()
+    };
 
-    // Basic validation
-    if (!name || !email || !profession || !message) {
-        showPopup('Please fill in all fields', 'error');
+    // Validate form data
+    if (!formData.name || !formData.email || !formData.profession || !formData.message) {
+        e.preventDefault();
+        showMessage('Please fill in all fields', 'error');
         submitButton.disabled = false;
         submitButton.textContent = originalButtonText;
         return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showPopup('Please enter a valid email address', 'error');
+    if (!emailRegex.test(formData.email)) {
+        e.preventDefault();
+        showMessage('Please enter a valid email address', 'error');
         submitButton.disabled = false;
         submitButton.textContent = originalButtonText;
         return;
     }
 
-    try {
-        // Create response object
-        const response = {
-            name: name,
-            email: email,
-            profession: profession,
-            message: message,
-            timestamp: new Date().toISOString()
-        };
-
-        // Get existing responses
-        let responses = [];
-        try {
-            responses = JSON.parse(localStorage.getItem('formResponses') || '[]');
-            if (!Array.isArray(responses)) responses = [];
-        } catch (err) {
-            console.error('Error parsing stored responses:', err);
-            responses = [];
-        }
-
-        // Add new response
-        responses.push(response);
-
-        // Store updated responses
-        localStorage.setItem('formResponses', JSON.stringify(responses));
-
-        // Show success message
-        showPopup('Message sent successfully! We will get back to you soon.', 'success');
-        
-        // Reset form
-        this.reset();
-    } catch (err) {
-        console.error('Error storing response:', err);
-        showPopup('An error occurred while saving your message. Please try again.', 'error');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = originalButtonText;
-    }
+    // If validation passes, let Netlify handle the form submission
+    showMessage('Sending message...', 'success');
 });
 
-function showPopup(message, type) {
-    const popup = document.getElementById('customPopup');
-    const content = document.getElementById('popupContent');
-    const successIcon = popup.querySelector('.success-icon');
-    const errorIcon = popup.querySelector('.error-icon');
-    
-    // Reset animations
-    popup.classList.remove('show', 'hide');
-    successIcon.style.display = 'none';
-    errorIcon.style.display = 'none';
-    
-    // Set content and type
-    popup.className = type;
-    content.textContent = message;
-    
-    // Show appropriate icon
+function showMessage(message, type) {
+    const form = document.getElementById('contactForm');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `form-message ${type}`;
+    messageDiv.style.color = type === 'success' ? '#4CAF50' : '#f44336';
+    messageDiv.style.marginTop = '10px';
+    messageDiv.style.padding = '10px';
+    messageDiv.style.borderRadius = '4px';
+    messageDiv.style.backgroundColor = type === 'success' ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)';
+    messageDiv.textContent = message;
+    form.appendChild(messageDiv);
+
     if (type === 'success') {
-        successIcon.style.display = 'block';
-    } else {
-        errorIcon.style.display = 'block';
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 5000);
     }
-    
-    // Show popup with animation
-    popup.style.display = 'block';
-    void popup.offsetWidth; // Force reflow
-    popup.classList.add('show');
 }
-
-function closePopup() {
-    const popup = document.getElementById('customPopup');
-    popup.classList.add('hide');
-    setTimeout(() => {
-        popup.style.display = 'none';
-        popup.classList.remove('hide');
-    }, 300);
-}
-
-// Close popup when clicking outside
-window.addEventListener('click', function(e) {
-    const popup = document.getElementById('customPopup');
-    if (e.target === popup) {
-        closePopup();
-    }
-});
 </script>
 
 				</div>
