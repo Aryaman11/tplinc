@@ -1144,6 +1144,14 @@ blocks.forEach(block => observer.observe(block));
     padding: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.response-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 102, 255, 0.2);
 }
 
 .response-card h3 {
@@ -1163,6 +1171,7 @@ blocks.forEach(block => observer.observe(block));
     margin-top: 15px;
     font-size: 16px;
     line-height: 1.5;
+    white-space: pre-wrap;
 }
 
 .timestamp {
@@ -1170,35 +1179,124 @@ blocks.forEach(block => observer.observe(block));
     font-size: 12px;
     margin-top: 10px;
 }
+
+/* Animation for new responses */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.response-card.new {
+    animation: slideInUp 0.5s ease-out forwards;
+}
+
+#responsesContainer {
+    position: relative;
+}
+
+.responses-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.responses-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+@media (max-width: 768px) {
+    .response-card {
+        margin: 10px;
+    }
+}
 </style>
 
 <script>
 // Function to load and display responses
 function loadResponses() {
     const responsesList = document.getElementById('responsesList');
-    const responses = JSON.parse(localStorage.getItem('formResponses') || '[]');
+    const responsesContainer = document.getElementById('responsesContainer');
+    let responses = JSON.parse(localStorage.getItem('formResponses') || '[]');
+    
+    // Update header with count
+    const headerHTML = `
+        <div class="responses-header">
+            <h2 style="font-size: 24px; margin: 0;">Form Responses</h2>
+            <span class="responses-count">${responses.length} ${responses.length === 1 ? 'Response' : 'Responses'}</span>
+        </div>
+    `;
+    
+    // Find the existing h2 and replace it with our new header
+    const existingHeader = responsesContainer.querySelector('h2');
+    if (existingHeader) {
+        existingHeader.parentElement.innerHTML = headerHTML;
+    }
     
     if (responses.length === 0) {
-        responsesList.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">No responses yet.</p>';
+        responsesList.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7); text-align: center; padding: 40px;">No responses yet.</p>';
         return;
     }
     
     // Sort responses by timestamp, most recent first
     responses.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     
-    responsesList.innerHTML = responses.map(response => `
-        <div class="response-card">
-            <h3>${response.name}</h3>
-            <div class="response-info">${response.email}</div>
-            <div class="response-info">${response.profession}</div>
-            <div class="response-message">${response.message}</div>
-            <div class="timestamp">${new Date(response.timestamp).toLocaleString()}</div>
+    responsesList.innerHTML = responses.map((response, index) => `
+        <div class="response-card ${index === 0 ? 'new' : ''}" data-timestamp="${response.timestamp}">
+            <h3>${escapeHtml(response.name)}</h3>
+            <div class="response-info">${escapeHtml(response.email)}</div>
+            <div class="response-info">${escapeHtml(response.profession)}</div>
+            <div class="response-message">${escapeHtml(response.message)}</div>
+            <div class="timestamp">${formatDate(response.timestamp)}</div>
         </div>
     `).join('');
 }
 
+// Helper function to escape HTML to prevent XSS
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// Helper function to format date
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }).format(date);
+}
+
 // Load responses when page loads
 document.addEventListener('DOMContentLoaded', loadResponses);
+
+// Listen for storage events to update in real-time
+window.addEventListener('storage', function(e) {
+    if (e.key === 'formResponses') {
+        loadResponses();
+    }
+});
+
+// Refresh responses periodically
+setInterval(loadResponses, 5000);
 </script>
 </body>
 </html>

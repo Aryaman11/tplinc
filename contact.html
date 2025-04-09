@@ -781,27 +781,44 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
         return;
     }
 
-    // Store the response (in this case, we'll just simulate success)
-    const response = {
-        name: name,
-        email: email,
-        profession: profession,
-        message: message,
-        timestamp: new Date().toISOString()
-    };
+    try {
+        // Create response object
+        const response = {
+            name: name,
+            email: email,
+            profession: profession,
+            message: message,
+            timestamp: new Date().toISOString()
+        };
 
-    // Store in localStorage (you can modify this to store elsewhere)
-    const responses = JSON.parse(localStorage.getItem('formResponses') || '[]');
-    responses.push(response);
-    localStorage.setItem('formResponses', JSON.stringify(responses));
+        // Get existing responses
+        let responses = [];
+        try {
+            responses = JSON.parse(localStorage.getItem('formResponses') || '[]');
+            if (!Array.isArray(responses)) responses = [];
+        } catch (err) {
+            console.error('Error parsing stored responses:', err);
+            responses = [];
+        }
 
-    // Show success message
-    showPopup('Message sent successfully! We will get back to you soon.', 'success');
-    
-    // Reset form
-    this.reset();
-    submitButton.disabled = false;
-    submitButton.textContent = originalButtonText;
+        // Add new response
+        responses.push(response);
+
+        // Store updated responses
+        localStorage.setItem('formResponses', JSON.stringify(responses));
+
+        // Show success message
+        showPopup('Message sent successfully! We will get back to you soon.', 'success');
+        
+        // Reset form
+        this.reset();
+    } catch (err) {
+        console.error('Error storing response:', err);
+        showPopup('An error occurred while saving your message. Please try again.', 'error');
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+    }
 });
 
 function showPopup(message, type) {
